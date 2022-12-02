@@ -1,0 +1,315 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+	<head>
+		<title>Project 3</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" http-equiv="content-type" content="text/html;" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css" integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin="" />
+        <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js" integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
+        <script src="leaflet-heat.js"></script>
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+        <script src="https://d3js.org/colorbrewer.v1.min.js"></script>
+        <script src="neighborhoods.js"></script>
+        <script src="main.js"></script>
+
+        <style>
+            #map { 
+                position: absolute;
+                width: 60%;
+                height: 100%; 
+            }
+        
+            #q1_plot {
+                width: 30%;
+                height: 100%; 
+            }
+        
+            #q2_plot {
+                width: 30%;
+                height: 100%; 
+            }
+        
+            #q3_plot {
+                width: 40%;
+                height: 100%; 
+            }
+        
+            #q4_plot {
+                width: 40%;
+                height: 100%; 
+            }
+        
+            #q5_plot {
+                width: 40%;
+                height: 100%; 
+            }
+        
+            #q6_plot {
+                width: 40%;
+                height: 100%; 
+            }
+        
+            .tooltip-donut {
+                position: absolute;
+                text-align: center;
+                padding: .5rem;
+                background: #FFFFFF;
+                color: #313639;
+                border: 1px solid #313639;
+                border-radius: 8px;
+                pointer-events: none;
+                font-size: 1.3rem;
+            }
+        
+        </style>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="index.html" class="logo"><strong>Editorial</strong> by HTML5 UP</a>
+									<ul class="icons">
+										<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+										<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+										<li><a href="#" class="icon brands fa-snapchat-ghost"><span class="label">Snapchat</span></a></li>
+										<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+										<li><a href="#" class="icon brands fa-medium-m"><span class="label">Medium</span></a></li>
+									</ul>
+								</header>
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+										<h1>CS 424 Project 3</h1>
+										<h2>Ming Yu Liew</h2>
+									</header>
+
+									<!-- <span class="image main"><img src="images/pic11.jpg" alt="" /></span> -->
+									
+									<hr class="major" />
+
+									<h2>Dataset</h2>
+									<p><a href="https://data.cityofchicago.org/Transportation/Traffic-Crashes-Vehicles/68nd-jvt3" target="_blank">Traffic Crashes - Vehicles</a> - Dataset source, March-December 2022</p>
+									<p><a href="https://data.cityofchicago.org/Transportation/Traffic-Crashes-Crashes/85ca-t3if" target="_blank">Traffic Crashes - Crashes</a> - Related dataset, March-December 2022</p>
+									<p><a href="https://idot.illinois.gov/Assets/uploads/files/Transportation-System/Manuals-Guides-&-Handbooks/Safety/Illinois%20Traffic%20Crash%20Report%20SR%201050%20Instruction%20Manual%202019.pdf" target="_blank">SR1050 Instruction Manual</a> - Explains what some of the data elements represents</p>
+									<p>This dataset contains about 1.33 million records and 72 attributes (columns) such as crash date, vehicle info(brand, model, year, registration), unit type(bike, self-driving), etc. Each record is a vehicle (referred to as units in the data) that was involved in a traffic crash collected by the Chicago Police Department.</p>
+
+									<hr class="major" />
+
+									<!-- <h2>From Project 2</h2> -->
+
+									<h2>Questions and Visualizations</h2>
+
+                                    <hr class="major" />
+
+                                    <h3>Question 1</h3>
+                                    <p><b>Domain Question:</b> What vehicles causes the most accidents?</p>
+                                    <p><b>Data Question:</b> What is the distribution of unit no for each unit type?</p>
+                                    <p><b>Attributes:</b> UNIT_NO, UNIT_TYPE, (total number of accidents reported)</p>
+                                    <p>We want to know which vehicles causes the most accidents. The most unit type that causes the most accidents will most likely be vehicles with drivers, but it would be helpful to check what other types of vehicles causes more accident, such as driverless and bicycles.</p>
+                                    
+                                    <h3>Question 2</h3>
+                                    <p><b>Domain Question:</b> How safe is it to bike in Chicago?</p>
+                                    <p><b>Data Question:</b> What percentage of accidents involving bicycles resulted in an injury?</p>
+                                    <p><b>Attributes:</b> UNIT_TYPE, CRASH_TYPE, (total number of accidents reported)</p>
+                                    <p>Instead of just creating a visualization for bicycles, we can use a selector from the visualization for question 1 and show for each unit type.</p>
+                                    
+                                    <h3>Visualization</h3>
+									<div class="row">
+										<select id="selectButton"></select>
+										<div class="col-6 col-12-small">
+                                        	<div id="q1_plot"></div>
+										</div>
+										<div class="col-6 col-12-small">
+                                        	<div id="q2_plot"></div>
+										</div>
+                                    </div>
+
+									<hr class="major" />
+
+                                    <h3>Question 3</h3>
+                                    <p><b>Domain Question:</b> Do more peoeple get injured when there are more occupants in the vehicles?</p>
+                                    <p><b>Data Question:</b> How does occupant count relate to total injuries and what is the distribution for each point?</p>
+                                    <p><b>Attributes:</b> INJURIES_TOTAL, OCCUPANT_CNT, (total number of accidents reported)</p>
+                                    <p>We want to know if more people are involved in the accident would result in more injuries. This can help us determine the safety of vehicles that can carry a lot of passengers, like buses.</p>
+
+                                    <h3>Question 4</h3>
+                                    <p><b>Domain Question:</b> How severe is the injury of the people involved in accidents?</p>
+                                    <p><b>Data Question:</b> What is the distribution of the different injury types?</p>
+                                    <p><b>Attributes:</b> INJURIES_FATAL, INJURIES_INCAPACITATING, INJURIES_NON_INCAPACITATING, INJURIES_REPORTED_NOT_EVIDENT, INJURIES_NO_INDICATION</p>
+                                    <p>By linking it with the visualization from question 3, we can see the most common type of injury suffered, especially accidents reported with a higher total injuries.</p>
+
+                                    <h3>Visualization</h3>
+                                    <div class="row">
+										<div class="col-6 col-12-small">
+                                        	<div id="q3_plot"></div>
+										</div>
+										<div class="col-6 col-12-small">
+                                        	<div id="q4_plot"></div>
+										</div>
+                                    </div>
+
+									<hr class="major" />
+
+                                    <!-- <h2>New visualizations</h2>
+
+                                    <hr class="major" /> -->
+
+									<h3>Question 5</h3>
+                                    <p><b>Domain Question:</b> Which months are there more accidents?</p>
+                                    <p><b>Data Question:</b> What is the distribution of the accidents per month?</p>
+                                    <p><b>Attributes:</b> CRASH_DATE, (total number of accidents reported)</p>
+                                    <p>The main motivation is to find out how road activity changes over the seasons and how different events may affect the number of accidents occuring.</p>
+
+                                    <h3>Question 6</h3>
+                                    <p><b>Domain Question:</b> Which day do most accidents occur?</p>
+                                    <p><b>Data Question:</b> What is the distribution of the accidents at over each month?</p>
+                                    <p><b>Attributes:</b> CRASH_DATE, (total number of accidents reported)</p>
+                                    <p>The motivation is the same as the previous question but we look more into the details by checking the distribution per day over a whole month, and by linking it with the previous visualization, we can change the visualiztion to display the data over the month selected.</p>
+
+                                    <h3>Visualization</h3>
+                                    <div class="row">
+										<div class="col-6 col-12-small">
+                                        	<div id="q5_plot"></div>
+										</div>
+										<div class="col-6 col-12-small">
+                                        	<div id="q6_plot"></div>
+										</div>
+                                    </div>
+
+                                    <hr class="major" />
+
+                                    <h2>Spatial View</h2>
+
+                                    <hr class="major" />
+									<h3>Question 7</h3>
+                                    <p><b>Domain Question:</b> Where do accidents occur more frequently in Chicago?</p>
+                                    <p><b>Data Question:</b> What is the spatial distribution of all accidents?</p>
+                                    <p><b>Attributes:</b> LATITUDE, LONGITUDE</p>
+                                    <p>By looking at where accidents occur, we could understand the road activity of different parts of the city and it could provide useful information for different uses, such as planning where to build new roads.</p>
+                                    <p>The map below is made using Leaflet and the map tile is from OpenStreetMap</p>
+
+                                    <div id="map"></div>
+
+								</section>
+
+						</div>
+					</div>
+
+				<!-- Sidebar -->
+					<!-- <div id="sidebar">
+						<div class="inner">
+
+							<!-- Search -->
+								<!-- <section id="search" class="alt">
+									<form method="post" action="#">
+										<input type="text" name="query" id="query" placeholder="Search" />
+									</form>
+								</section> -->
+
+							<!-- Menu -->
+								<!-- <nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+										<li><a href="index.html">Homepage</a></li>
+										<li><a href="generic.html">Generic</a></li>
+										<li><a href="elements.html">Elements</a></li>
+										<li>
+											<span class="opener">Submenu</span>
+											<ul>
+												<li><a href="#">Lorem Dolor</a></li>
+												<li><a href="#">Ipsum Adipiscing</a></li>
+												<li><a href="#">Tempus Magna</a></li>
+												<li><a href="#">Feugiat Veroeros</a></li>
+											</ul>
+										</li>
+										<li><a href="#">Etiam Dolore</a></li>
+										<li><a href="#">Adipiscing</a></li>
+										<li>
+											<span class="opener">Another Submenu</span>
+											<ul>
+												<li><a href="#">Lorem Dolor</a></li>
+												<li><a href="#">Ipsum Adipiscing</a></li>
+												<li><a href="#">Tempus Magna</a></li>
+												<li><a href="#">Feugiat Veroeros</a></li>
+											</ul>
+										</li>
+										<li><a href="#">Maximus Erat</a></li>
+										<li><a href="#">Sapien Mauris</a></li>
+										<li><a href="#">Amet Lacinia</a></li>
+									</ul>
+								</nav> -->
+
+							<!-- Section -->
+								<!-- <section>
+									<header class="major">
+										<h2>Ante interdum</h2>
+									</header>
+									<div class="mini-posts">
+										<article>
+											<a href="#" class="image"><img src="images/pic07.jpg" alt="" /></a>
+											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+										</article>
+										<article>
+											<a href="#" class="image"><img src="images/pic08.jpg" alt="" /></a>
+											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+										</article>
+										<article>
+											<a href="#" class="image"><img src="images/pic09.jpg" alt="" /></a>
+											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
+										</article>
+									</div>
+									<ul class="actions">
+										<li><a href="#" class="button">More</a></li>
+									</ul>
+								</section> -->
+
+							<!-- Section -->
+								<!-- <section>
+									<header class="major">
+										<h2>Get in touch</h2>
+									</header>
+									<p>Sed varius enim lorem ullamcorper dolore aliquam aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin sed aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
+									<ul class="contact">
+										<li class="icon solid fa-envelope"><a href="#">information@untitled.tld</a></li>
+										<li class="icon solid fa-phone">(000) 000-0000</li>
+										<li class="icon solid fa-home">1234 Somewhere Road #8254<br />
+										Nashville, TN 00000-0000</li>
+									</ul>
+								</section> -->
+
+							<!-- Footer -->
+								<!-- <footer id="footer">
+									<p class="copyright">&copy; Untitled. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer> -->
+
+						<!-- </div>
+					</div> -->
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
