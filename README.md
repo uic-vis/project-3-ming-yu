@@ -1,10 +1,3 @@
-<style>
-    img {
-        max-width: 60%;
-        max-height: 100%;
-    }
-</style>
-
 # Project 3
 Webpage: [https://mliew2.github.io/](https://mliew2.github.io/)
 ## Dataset
